@@ -1,29 +1,69 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { createTodo, deleteTodo, getAllTodos, updateTodo } from "../api/db";
 
 const Todos = () => {
-  const [todos, setTodos] = useState([
-    { id: 1, content: "do laundry" },
-    { id: 2, content: "meal prep" },
-    { id: 3, content: "study statistics" },
-  ]);
-
+  const [todos, setTodos] = useState([]);
   const [inputTodo, setInputTodo] = useState("");
+  const [editingTexts, setEditingTexts] = useState("");
 
-  const removeTodo = (todo) => {
-    setTodos((prev) => prev.filter((x) => x.id != todo.id));
-  };
-
-  const addTodo = (e) => {
-    e.preventDefault();
-
-    if (inputTodo) {
-      const rand = Math.floor(Math.random() * 100);
-      setTodos((prev) => [...prev, { id: rand, content: inputTodo }]);
-      setInputTodo("");
+  const removeTodo = async (todo) => {
+    try {
+      await deleteTodo(todo);
+      setTodos(await getAllTodos());
+    } catch (error) {
+      console.log("errror deleting todo", todo);
+      console.log(error);
     }
   };
 
-  const handleInputTodoChange = (e) => setInputTodo(e.target.value);
+  const addTodo = async (e) => {
+    e.preventDefault();
+
+    if (inputTodo) {
+      try {
+        await createTodo(inputTodo);
+        setTodos(await getAllTodos());
+        setInputTodo("");
+      } catch (error) {
+        console.log("failed to add todo", { todo: inputTodo });
+        console.log(error);
+      }
+    }
+  };
+
+  const makeTodoEditable = async (todo) => {
+    const updateTodos = todos.map((obj) => {
+      if (obj.id == todo.id) {
+        return { ...obj, isEditing: true };
+      } else {
+        return obj;
+      }
+    });
+    setTodos(updateTodos);
+    setEditingTexts((prev) => [...prev, todo]);
+  };
+
+  const handleEditingTexts = (value, todo) => {
+    const changedTodos = editingTexts.map((obj) => {
+      if (obj.id == todo.id) {
+        return { ...obj, todo: value };
+      } else {
+        return obj;
+      }
+    });
+
+    setEditingTexts(changedTodos);
+  };
+
+  useEffect(() => {
+    async function getTodos() {
+      const snapshot = await getAllTodos();
+      setTodos(snapshot);
+    }
+    getTodos();
+  }, []);
+
+  console.log(editingTexts);
 
   return (
     <main className="p-3">
@@ -33,11 +73,21 @@ const Todos = () => {
           {todos.length > 0 ? (
             todos.map((el, ind) => (
               <li key={ind} className="w-100 d-flex justify-content-between">
-                <p className="h5 fw-semibold">{el.content}</p>
+                {!el.isEditing ? (
+                  <p className="h5 fw-semibold">{el.todo}</p>
+                ) : (
+                  <input
+                    type="text"
+                    value={editingTexts.filter((obj) => obj.id == el.id)[0].todo}
+                    onChange={(e) => handleEditingTexts(e.target.value, el)}
+                  />
+                )}
                 <div className="btn-group">
-                  <button className="btn btn-info">Update</button>
-                  <button className="btn btn-danger" onClick={() => removeTodo(el)}>
-                    Delete
+                  <button className={"btn " + (!el.isEditing ? "btn-info" : "btn-success")} onClick={() => makeTodoEditable(el)}>
+                    {!el.isEditing ? "Update" : "Accept"}
+                  </button>
+                  <button className={"btn " + (!el.isEditing ? "btn-danger" : "btn-secondary")} onClick={() => removeTodo(el)}>
+                    {!el.isEditing ? "Delete" : "Back"}
                   </button>
                 </div>
               </li>
@@ -49,7 +99,7 @@ const Todos = () => {
       </div>
 
       <form onSubmit={addTodo} className="d-flex column-gap-3 py-3">
-        <input type="text" className="rounded-2" value={inputTodo} onChange={handleInputTodoChange} />
+        <input type="text" className="rounded-2" value={inputTodo} onChange={(e) => setInputTodo(e.target.value)} />
         <button type="submit" className="btn btn-primary">
           Create
         </button>
