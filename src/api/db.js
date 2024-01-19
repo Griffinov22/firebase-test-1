@@ -20,5 +20,5 @@ export async function createTodo(todo) {
 }
 
 export async function updateTodo(todo) {
-  await updateDoc(doc(db, "dodos", todo.id), todo);
+  await updateDoc(doc(db, "todos", todo.id), todo);
 }
