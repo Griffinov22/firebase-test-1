@@ -3,13 +3,21 @@ import { Route, RouterProvider, createBrowserRouter, createRoutesFromElements } 
 import Home from "./pages/Home";
 import Index from "./layout";
 import Todos from "./pages/Todos";
+import Protected from "./context/Protected";
 
 function App() {
   const routes = createBrowserRouter(
     createRoutesFromElements(
       <Route path="/" element={<Index />}>
         <Route index element={<Home />} />
-        <Route path="/todos" element={<Todos />} />
+        <Route
+          path="/todos"
+          element={
+            <Protected>
+              <Todos />
+            </Protected>
+          }
+        />
       </Route>
     )
   );
