@@ -4,12 +4,13 @@ import { useNavigate } from "react-router-dom";
 
 const Protected = ({ children }) => {
   //makes sure users are signed in. if not, they will be returned to home
-  const { user } = useContext(UserContext);
+  const { user, setAccessError } = useContext(UserContext);
   const navigate = useNavigate();
 
   useEffect(() => {
-    if (Object.keys(user).length == 0) {
+    if (!user) {
       console.log("user blocked");
+      setAccessError(true);
       navigate("/");
     }
   }, []);

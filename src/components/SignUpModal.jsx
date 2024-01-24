@@ -3,17 +3,13 @@ import { GoogleAuthProvider, getAuth, signInWithPopup } from "firebase/auth";
 import { UserContext } from "../context/UserProvider";
 
 const SignUpModal = forwardRef(function SignUpModal({ close }, ref) {
-  const { setUser } = useContext(UserContext);
   const provider = new GoogleAuthProvider();
   const auth = getAuth();
 
   const openGoogle = () => {
     signInWithPopup(auth, provider)
-      .then((data) => {
-        //success
-        console.log(data.user);
-        setUser(data.user);
-        //close modal
+      .then((_data) => {
+        //if successful sign-in close the modal
         close();
       })
       .catch((err) => {

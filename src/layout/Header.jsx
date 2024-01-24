@@ -2,6 +2,7 @@ import { useContext, useRef } from "react";
 import { NavLink, useNavigate } from "react-router-dom";
 import SignUpModal from "../components/signUpModal";
 import { UserContext } from "../context/UserProvider";
+import { getAuth, signOut } from "firebase/auth";
 
 const Header = () => {
   const { user, setUser } = useContext(UserContext);
@@ -12,11 +13,15 @@ const Header = () => {
   const openSignUp = () => signUpRef.current.showModal();
   const closeSignUp = () => signUpRef.current.close();
 
-  const signOut = () => {
-    //proof of concept -- change to sign user out of firebase
-    setUser({});
-    console.log("signed out");
-    navigate("/");
+  const signUserOut = () => {
+    //if successful sign-out send to home page
+    signOut(getAuth())
+      .then(() => {
+        navigate("/");
+      })
+      .catch((err) => {
+        console.log("signing user out unsucessful: ", err);
+      });
   };
 
   return (
@@ -40,7 +45,7 @@ const Header = () => {
           </button>
         )}
 
-        <button className="nav-link text-decoration-underline m-0 p-0" onClick={signOut}>
+        <button className="nav-link text-decoration-underline m-0 p-0" onClick={signUserOut}>
           Log Out
         </button>
       </nav>

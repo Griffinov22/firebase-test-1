@@ -4,3 +4,14 @@
   box-sizing: border-box;
   margin: 0;
 }
+
+#error-modal {
+  transition: transform 200ms ease-in-out, opacity 200ms ease-in-out;
+  transform: translateY(25px);
+  opacity: 0;
+}
+
+#error-modal[open] {
+  opacity: 1;
+  transform: translateY(0);
+}
