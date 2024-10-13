@@ -1,8 +1,23 @@
-# React + Vite
+# Firebase Test Project
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+This repository contains a simple project designed to learn how to use Firebase as a database. The primary goal was to understand the functionality and features of Firebase, which is recognized as an industry-standard solution for real-time data storage and synchronization.
 
-Currently, two official plugins are available:
+## Table of Contents
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+- [Features](#features)
+- [Technologies Used](#technologies-used)
+
+## Features
+
+- Real-time database interactions
+- User authentication
+- Data storage and retrieval
+- Simple UI for demonstration purposes
+
+## Technologies Used
+
+- React.js
+- Firebase databases
+- HTML
+- CSS
+- JavaScript
